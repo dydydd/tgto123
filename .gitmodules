@@ -1,6 +1,6 @@
 [submodule "p115client"]
 	path = p115client
-	url = https://github.com/cutelele/p115client.git
+	url = https://github.com/dydydd/p115client.git
 [submodule "p123client"]
 	path = p123client
-	url = https://github.com/NullAdmin123/p123client.git
+	url = https://github.com/dydydd/p123client.git
