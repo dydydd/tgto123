@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  tgto123:
+    build: .
+    container_name: tgto123
+    restart: unless-stopped
+    ports:
+      - "12366:12366"
+    volumes:
+      - ./db:/app/db
+      - ./upload:/app/upload
+      - ./transfer:/app/transfer
+    environment:
+      # Web管理界面登录配置（必填）
+      - ENV_WEB_PASSPORT=admin
+      - ENV_WEB_PASSWORD=123456
+      
+      # 123云盘配置（必填）- 从db/user.env文件读取，或在这里直接配置
+      - ENV_123_CLIENT_ID=${ENV_123_CLIENT_ID:-}
+      - ENV_123_CLIENT_SECRET=${ENV_123_CLIENT_SECRET:-}
+      
+      # Telegram Bot配置（必填）
+      - ENV_TG_BOT_TOKEN=${ENV_TG_BOT_TOKEN:-}
+      - ENV_TG_ADMIN_USER_ID=${ENV_TG_ADMIN_USER_ID:-}
+      
+      # 123云盘功能配置
+      - ENV_123_LINK_UPLOAD_PID=${ENV_123_LINK_UPLOAD_PID:-0}
+      - ENV_123_MAGNET_UPLOAD_PID=${ENV_123_MAGNET_UPLOAD_PID:-0}
+      - ENV_123_JSON_UPLOAD_PID=${ENV_123_JSON_UPLOAD_PID:-0}
+      - ENV_123_UPLOAD_PID=${ENV_123_UPLOAD_PID:-0}
+      
+      # 监控功能配置
+      - ENV_AUTHORIZATION=${ENV_AUTHORIZATION:-0}
+      - ENV_TG_CHANNEL=${ENV_TG_CHANNEL:-}
+      - ENV_FILTER=${ENV_FILTER:-}
+      - ENV_EXCLUDE_FILTER=${ENV_EXCLUDE_FILTER:-}
+      - ENV_CHECK_INTERVAL=${ENV_CHECK_INTERVAL:-5}
+      
+      # 其他配置
+      - ENV_AUTO_MAKE_JSON=${ENV_AUTO_MAKE_JSON:-1}
+      - ENV_MAKE_NEW_LINK=${ENV_MAKE_NEW_LINK:-1}
+      - ENV_FILE_PER_SECOND=${ENV_FILE_PER_SECOND:-5}
+      - MAX_CACHE_302LINK=${MAX_CACHE_302LINK:-100}
+    env_file:
+      - ./db/user.env
+

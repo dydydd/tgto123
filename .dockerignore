@@ -1,0 +1,22 @@
+# 忽略不需要打包进镜像的文件
+.git
+.gitignore
+.env
+.env.example
+docker-compose.yml
+Dockerfile
+README.md
+*.md
+db/*.db
+db/log/*
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info
+dist
+build
+

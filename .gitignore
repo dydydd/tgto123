@@ -1,0 +1,72 @@
+# Python相关
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+PIPFILE.lock
+
+# 环境变量和配置文件
+.env
+*.env
+!templete.env
+
+# 数据库文件
+*.db
+*.sqlite
+*.sqlite3
+db/*.db
+db/log/*.log
+db/log/*.txt
+
+# 上传和临时文件
+upload/*
+transfer/*
+!upload/.gitkeep
+!transfer/.gitkeep
+
+# IDE相关
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# 日志文件
+*.log
+logs/
+
+# 临时文件
+tmp/
+temp/
+*.tmp
+
+# Cookie和敏感信息
+*cookie*
+*cookies*
+
+# 第三方客户端库(建议通过requirements安装)
+p115client/
+p123client/
+
+# Docker相关
+docker-compose.override.yml
+
