@@ -63,10 +63,6 @@ temp/
 *cookie*
 *cookies*
 
-# 第三方客户端库(建议通过requirements安装)
-p115client/
-p123client/
-
 # Docker相关
 docker-compose.override.yml
 
