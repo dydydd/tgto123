@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 from datetime import time as time_datetime
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-from p123client.p123client.client import P123Client, check_response
+from p123client import P123Client, check_response
 from urllib.parse import urlsplit, parse_qs
 import re
 import telebot

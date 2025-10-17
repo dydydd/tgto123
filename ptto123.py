@@ -3,7 +3,7 @@ import time
 import hashlib
 import logging
 logger = logging.getLogger(__name__)
-from p123client.p123client import P123Client  # 导入123网盘客户端
+from p123client import P123Client  # 导入123网盘客户端
 from filewrap import SupportsRead  # 从原依赖导入必要类
 from hashtools import file_digest  # 用于高效计算MD5
 from dotenv import load_dotenv

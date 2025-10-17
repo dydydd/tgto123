@@ -8,8 +8,8 @@ logger = logging.getLogger(__name__)
 from datetime import datetime
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-from p115client.p115client.client import P115Client, check_response, normalize_attr as normalize_attr_simple
-from p115client.p115client.exception import P115OSError, AuthenticationError
+from p115client import P115Client, check_response, normalize_attr as normalize_attr_simple
+from p115client import P115OSError, AuthenticationError
 from urllib.parse import urlsplit, parse_qs
 import re
 import schedule
@@ -72,7 +72,7 @@ def init_115_client():
         try:
             client_115 = P115Client(cookies=COOKIES)
             # 验证客户端是否有效
-            client_115.user_info()
+            client_115.user_my_info()
             #print("[115客户端] 初始化成功")
         except Exception as e:
             logger.error(f"115客户端初始化失败：{e}")

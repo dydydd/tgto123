@@ -14,6 +14,15 @@ RUN pip install -r requirements.txt
 # 【关键优化2】再复制其他文件（代码变动不影响依赖层缓存）
 COPY . /app
 
+# 清理所有缓存文件
+RUN find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true && \
+    find . -type f -name "*.pyc" -delete
+
+# 安装构建工具和本地包
+RUN pip install --upgrade pip setuptools wheel && \
+    pip install ./p123client && \
+    pip install ./p115client
+
 # 编译Python文件为.pyc
 RUN python -m compileall -b .
 

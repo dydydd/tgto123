@@ -1,17 +1,19 @@
-version: '3.8'
-
 services:
   tgto123:
     build: .
     container_name: tgto123
-    restart: unless-stopped
+    restart: always
+    network_mode: host
     ports:
       - "12366:12366"
     volumes:
-      - ./db:/app/db
+      - /root/docker/db:/app/db
       - ./upload:/app/upload
       - ./transfer:/app/transfer
     environment:
+      # 时区设置
+      - TZ=Asia/Shanghai
+      
       # Web管理界面登录配置（必填）
       - ENV_WEB_PASSPORT=admin
       - ENV_WEB_PASSWORD=123456
@@ -42,6 +44,4 @@ services:
       - ENV_MAKE_NEW_LINK=${ENV_MAKE_NEW_LINK:-1}
       - ENV_FILE_PER_SECOND=${ENV_FILE_PER_SECOND:-5}
       - MAX_CACHE_302LINK=${MAX_CACHE_302LINK:-100}
-    env_file:
-      - ./db/user.env
 

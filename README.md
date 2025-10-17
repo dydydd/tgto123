@@ -1,4 +1,4 @@
-# TGTO - Telegram云盘自动转存工具
+# TGTO123 - Telegram云盘自动转存工具
 
 这是一个功能强大的云盘自动化转存工具,支持监控Telegram频道并自动转存资源到多个云盘平台。
 
@@ -23,7 +23,7 @@
 ### 1. 克隆项目
 
 ```bash
-git clone https://github.com/你的用户名/tgto.git
+git clone https://github.com/你的用户名/tgto123.git
 cd tgto
 ```
 

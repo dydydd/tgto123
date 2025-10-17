@@ -5,8 +5,8 @@ logger = logging.getLogger(__name__)
 import requests
 import hashlib
 from dotenv import load_dotenv
-from p115client.p115client.client import P115Client
-from p123client.p123client import P123Client
+from p115client import P115Client
+from p123client import P123Client
 
 # 加载.env文件中的环境变量
 load_dotenv(dotenv_path="db/user.env",override=True)

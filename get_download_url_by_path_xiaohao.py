@@ -7,8 +7,8 @@ import logging
 import threading
 import guessit
 from dotenv import load_dotenv
-from p123client.p123client.tool import get_downurl
-from p123client.p123client import P123Client
+from p123client.tool import get_downurl
+from p123client import P123Client
 # 加载.env文件中的环境变量
 load_dotenv(dotenv_path="db/user.env",override=True)
 load_dotenv(dotenv_path="sys.env",override=True)
