@@ -23,8 +23,8 @@
 ### 1. 克隆项目
 
 ```bash
-git clone https://github.com/你的用户名/tgto123.git
-cd tgto
+git clone --recursive https://github.com/dydydd/tgto123.git
+cd tgto123
 ```
 
 ### 2. 配置环境变量
