@@ -3093,14 +3093,36 @@ def process_json_file(message):
             response = requests.get(json_url)
             json_data = response.json()
 
-            # 提取commonPath、files、totalFilesCount和totalSize
-            common_path = json_data.get('commonPath', '').strip()
-            if common_path.endswith('/'):
-                common_path = common_path[:-1]
-            files = json_data.get('files', [])
-            uses_v2_etag = json_data.get('usesBase62EtagsInExport', False)
-            total_files_count = json_data.get('totalFilesCount', len(files))
-            total_size_json = json_data.get('totalSize', 0)
+            # 判断并转换不同的JSON格式
+            if isinstance(json_data, list):
+                # 格式2: 数组格式 [[etag, size, filename], ...]
+                logger.info("检测到数组格式的妙传文件")
+                common_path = ''
+                files = []
+                uses_v2_etag = False
+                total_size_json = 0
+                
+                for item in json_data:
+                    if isinstance(item, list) and len(item) >= 3:
+                        etag, size, filename = item[0], item[1], item[2]
+                        files.append({
+                            'path': filename,
+                            'etag': etag,
+                            'size': size
+                        })
+                        total_size_json += int(size)
+                
+                total_files_count = len(files)
+            else:
+                # 格式1: 对象格式 {commonPath, files, ...}
+                logger.info("检测到对象格式的妙传文件")
+                common_path = json_data.get('commonPath', '').strip()
+                if common_path.endswith('/'):
+                    common_path = common_path[:-1]
+                files = json_data.get('files', [])
+                uses_v2_etag = json_data.get('usesBase62EtagsInExport', False)
+                total_files_count = json_data.get('totalFilesCount', len(files))
+                total_size_json = json_data.get('totalSize', 0)
 
             if not files:
                 # 使用线程池发送回复
