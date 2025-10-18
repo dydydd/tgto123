@@ -9,6 +9,8 @@
 [![GitHub issues](https://img.shields.io/github/issues/dydydd/123bot)](https://github.com/dydydd/123bot/issues)
 [![GitHub license](https://img.shields.io/github/license/dydydd/123bot)](https://github.com/dydydd/123bot/blob/main/LICENSE)
 [![Docker Pulls](https://img.shields.io/docker/pulls/dydydd/123bot)](https://hub.docker.com/r/dydydd/123bot)
+[![Docker Build](https://github.com/dydydd/123bot/actions/workflows/docker-build.yml/badge.svg)](https://github.com/dydydd/123bot/actions/workflows/docker-build.yml)
+[![Docker Image Size](https://img.shields.io/docker/image-size/dydydd/123bot/latest)](https://hub.docker.com/r/dydydd/123bot)
 
 **一个功能强大的 Telegram 云盘自动化转存工具，支持多平台云盘自动转存、离线下载、秒传和 302 播放**
 
@@ -533,13 +535,6 @@ python 123bot.py  # 主程序
 
 [![Star History Chart](https://api.star-history.com/svg?repos=dydydd/123bot&type=Date)](https://star-history.com/#dydydd/123bot&Date)
 
----
-
-## 📝 更新日志
-
-查看 [CHANGELOG.md](CHANGELOG.md) 了解版本更新记录。
-
----
 
 ## 📄 许可证
 

@@ -28,13 +28,16 @@ PIPFILE.lock
 *.env
 !templete.env
 
-# 数据库文件
+# 数据库和数据目录
 *.db
 *.sqlite
 *.sqlite3
-db/*.db
-db/log/*.log
-db/log/*.txt
+
+# db 目录 - 忽略所有内容但保留目录结构
+db/*
+db/log/*
+!db/.gitkeep
+!db/log/.gitkeep
 
 # 上传和临时文件
 upload/*
