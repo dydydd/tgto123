@@ -28,7 +28,7 @@ from content_check import check_porn_content
 logging.getLogger("httpx").setLevel(logging.ERROR)
 logging.getLogger("urllib3.connectionpool").setLevel(logging.ERROR)
 logging.getLogger("telebot").setLevel(logging.ERROR)
-version = "6.7.5"  # 版本更新
+version = "v1.0.2"  # 版本更新
 newest_id = 47
 # 加载.env文件中的环境变量
 load_dotenv(dotenv_path="db/user.env",override=True)
@@ -1588,7 +1588,7 @@ def handle_start(message):
     if user_id != TG_ADMIN_USER_ID:
         reply_thread_pool.submit(send_reply, message, "您没有权限使用此机器人。")
         return
-    reply_thread_pool.submit(send_reply, message, "机器人已启动")
+    reply_thread_pool.submit(send_reply, message, f"🤖 123bot 机器人已启动\n📌 当前版本: {version}\n🔗 项目地址: https://github.com/dydydd/123bot")
     # 版本检查已禁用
     # try:
     #     # 等待bot对象初始化完成

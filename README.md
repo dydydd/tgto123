@@ -4,6 +4,7 @@
 
 ### Telegram 云盘自动转存机器人
 
+[![Version](https://img.shields.io/badge/version-v1.0.2-blue)](https://github.com/dydydd/123bot/releases)
 [![GitHub stars](https://img.shields.io/github/stars/dydydd/123bot?style=social)](https://github.com/dydydd/123bot/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/dydydd/123bot?style=social)](https://github.com/dydydd/123bot/network/members)
 [![GitHub issues](https://img.shields.io/github/issues/dydydd/123bot)](https://github.com/dydydd/123bot/issues)
@@ -37,6 +38,7 @@
 - [API 接口](#-api-接口)
 - [常见问题](#-常见问题)
 - [开发指南](#-开发指南)
+- [更新日志](#-更新日志)
 - [许可证](#-许可证)
 - [免责声明](#-免责声明)
 
@@ -121,39 +123,111 @@ cd 123bot
 
 > 💡 注意：使用 `--recursive` 参数克隆子模块
 
-#### 2️⃣ 配置环境变量
+#### 2️⃣ 配置 docker-compose.yml
 
-编辑 `docker-compose.yml` 文件，填入必要的配置：
+**方式一：使用 Docker Hub 镜像（推荐）**
+
+创建或编辑 `docker-compose.yml` 文件：
 
 ```yaml
-environment:
-  # Web 管理界面登录（必填）
-  - ENV_WEB_PASSPORT=admin              # 修改为您的用户名
-  - ENV_WEB_PASSWORD=your_password      # 修改为强密码
-  
-  # Telegram Bot 配置（必填）
-  - ENV_TG_BOT_TOKEN=1234567890:ABCdefGHIjklMNOpqrsTUVwxyz  # Bot Token
-  - ENV_TG_ADMIN_USER_ID=123456789      # 您的 User ID
-  
-  # 123云盘配置（必填）
-  - ENV_123_CLIENT_ID=your_client_id
-  - ENV_123_CLIENT_SECRET=your_client_secret
+version: '3'
+
+services:
+  123bot-service:
+    image: dydydd/123bot:latest  # 或使用指定版本: dydydd/123bot:v1.0.2
+    container_name: 123bot
+    network_mode: host
+    ports:
+      - '12366:12366'
+    environment:
+      # 必填：代理配置（v2填20172带分流规则的端口，clash填7890端口）
+      - HTTP_PROXY=http://127.0.0.1:7890
+      # 必填：代理配置（v2填20172带分流规则的端口，clash填7890端口）
+      - HTTPS_PROXY=http://127.0.0.1:7890
+      # 必填：时区配置
+      - TZ=Asia/Shanghai
+      # 必填：TG机器人Token（从@BotFather获取）
+      - ENV_TG_BOT_TOKEN=
+      # 必填：TG管理员用户ID（从@userinfobot获取）
+      - ENV_TG_ADMIN_USER_ID=
+      # 必填：WEB配置页面的登录账号
+      - ENV_WEB_PASSPORT=
+      # 必填：WEB配置页面的登录密码
+      - ENV_WEB_PASSWORD=
+    volumes:
+      # 持久化存储db目录
+      - ./db:/app/db
+      # 本地PT文件下载目录（左侧）映射到容器内监控目录（右侧）
+      - /vol3/1000/Video/MoviePilot/transfer:/app/upload
+      # 超过重试次数后将通过CD2上传文件
+      - /vol1/1000/CloudNAS/CloudDrive/115云盘/Video/待归档影视/MP待归档影视:/app/transfer
+    restart: always  # 容器退出后自动重启
 ```
+
+**方式二：本地构建镜像**
+
+如果需要修改代码或本地构建，使用以下配置：
+
+```yaml
+version: '3'
+
+services:
+  bot123:
+    build: .
+    container_name: bot123
+    restart: always
+    network_mode: host
+    ports:
+      - "12366:12366"
+    volumes:
+      - ./db:/app/db
+      - ./upload:/app/upload
+      - ./transfer:/app/transfer
+    environment:
+      # 时区设置
+      - TZ=Asia/Shanghai
+      
+      # Web管理界面登录配置（必填）
+      - ENV_WEB_PASSPORT=admin
+      - ENV_WEB_PASSWORD=123456
+      
+      # 123云盘配置（必填）- 从db/user.env文件读取，或在这里直接配置
+      - ENV_123_CLIENT_ID=${ENV_123_CLIENT_ID:-}
+      - ENV_123_CLIENT_SECRET=${ENV_123_CLIENT_SECRET:-}
+      
+      # Telegram Bot配置（必填）
+      - ENV_TG_BOT_TOKEN=${ENV_TG_BOT_TOKEN:-}
+      - ENV_TG_ADMIN_USER_ID=${ENV_TG_ADMIN_USER_ID:-}
+```
+
+> 💡 **提示**：
+> - 方式一直接使用预构建镜像，启动速度快，无需本地编译
+> - 方式二适合需要修改代码或调试的场景
+> - 代理配置可根据实际情况修改端口（v2ray 用 20172，clash 用 7890）
+> - 卷映射路径请根据实际情况修改
 
 #### 3️⃣ 启动服务
 
 ```bash
-# 构建并启动
+# 启动服务
 docker-compose up -d
 
-# 查看日志
-docker-compose logs -f bot123
+# 查看日志（根据容器名选择）
+docker-compose logs -f 123bot  # 方式一
+# 或
+docker-compose logs -f bot123   # 方式二
 
 # 停止服务
 docker-compose down
 
 # 重启服务
 docker-compose restart
+
+# 拉取最新镜像并重启（方式一）
+docker-compose pull && docker-compose up -d
+
+# 重新构建并启动（方式二）
+docker-compose build --no-cache && docker-compose up -d
 ```
 
 #### 4️⃣ 访问服务
@@ -166,30 +240,40 @@ docker-compose restart
 
 ### 使用 Docker Hub 镜像
 
-直接从 Docker Hub 拉取预构建镜像：
+直接从 Docker Hub 拉取预构建镜像（不使用 docker-compose）：
 
 ```bash
 # 拉取最新镜像
 docker pull dydydd/123bot:latest
 
-# 运行容器
+# 或拉取指定版本
+docker pull dydydd/123bot:v1.0.2
+
+# 运行容器（带代理配置）
 docker run -d \
-  --name bot123 \
+  --name 123bot \
   --network host \
   -p 12366:12366 \
+  -e HTTP_PROXY=http://127.0.0.1:7890 \
+  -e HTTPS_PROXY=http://127.0.0.1:7890 \
   -e TZ=Asia/Shanghai \
   -e ENV_TG_BOT_TOKEN=your_bot_token \
   -e ENV_TG_ADMIN_USER_ID=your_user_id \
   -e ENV_WEB_PASSPORT=admin \
   -e ENV_WEB_PASSWORD=your_password \
-  -e ENV_123_CLIENT_ID=your_client_id \
-  -e ENV_123_CLIENT_SECRET=your_client_secret \
-  -v /path/to/db:/app/db \
+  -v ./db:/app/db \
   -v /path/to/upload:/app/upload \
   -v /path/to/transfer:/app/transfer \
   --restart always \
   dydydd/123bot:latest
+
+# 如果不需要代理，可以去掉 HTTP_PROXY 和 HTTPS_PROXY 环境变量
 ```
+
+> 💡 **提示**：
+> - 代理端口根据实际情况修改（v2ray 用 20172，clash 用 7890）
+> - 如果不需要代理，可删除 `-e HTTP_PROXY` 和 `-e HTTPS_PROXY` 行
+> - 123云盘配置可以在 Web 界面中填写，无需在启动时指定
 
 **Docker 常用命令**
 
@@ -198,16 +282,22 @@ docker run -d \
 docker ps
 
 # 查看实时日志
-docker logs -f bot123
+docker logs -f 123bot
 
 # 进入容器调试
-docker exec -it bot123 /bin/bash
+docker exec -it 123bot /bin/bash
 
 # 停止/启动/重启
-docker stop/start/restart bot123
+docker stop/start/restart 123bot
 
 # 删除容器
-docker rm -f bot123
+docker rm -f 123bot
+
+# 更新镜像
+docker pull dydydd/123bot:latest
+docker stop 123bot
+docker rm 123bot
+# 然后重新运行 docker run 命令
 
 # 查看镜像
 docker images | grep 123bot
@@ -420,12 +510,15 @@ http://your-server-ip:12366/xiaohao5/文件路径  # 线路5
 
 **方式二：手动修改**
 ```bash
-# 编辑配置文件
-docker exec -it bot123 /bin/bash
+# 编辑配置文件（根据容器名选择）
+docker exec -it 123bot /bin/bash  # 方式一
+# 或
+docker exec -it bot123 /bin/bash   # 方式二
+
 nano /app/db/user.env
 
 # 重启容器使配置生效
-docker restart bot123
+docker restart 123bot  # 或 bot123
 ```
 
 </details>
@@ -434,14 +527,16 @@ docker restart bot123
 <summary><b>如何查看日志？</b></summary>
 
 ```bash
-# 查看实时日志
-docker logs -f bot123
+# 查看实时日志（根据容器名选择）
+docker logs -f 123bot  # 方式一
+# 或
+docker logs -f bot123   # 方式二
 
 # 查看最近 100 行日志
-docker logs --tail 100 bot123
+docker logs --tail 100 123bot
 
 # 查看日志文件
-docker exec -it bot123 cat /app/db/log/start-log.log
+docker exec -it 123bot cat /app/db/log/start-log.log
 ```
 
 </details>
@@ -450,10 +545,10 @@ docker exec -it bot123 cat /app/db/log/start-log.log
 <summary><b>容器无法启动怎么办？</b></summary>
 
 1. 检查配置是否正确
-2. 查看容器日志：`docker logs bot123`
+2. 查看容器日志：`docker logs 123bot` 或 `docker logs bot123`
 3. 确保端口 12366 未被占用
 4. 检查 Docker 和 Docker Compose 版本
-5. 尝试重新构建：`docker-compose build --no-cache`
+5. 尝试重新拉取镜像：`docker-compose pull` 或重新构建：`docker-compose build --no-cache`
 
 </details>
 
@@ -522,6 +617,17 @@ python 123bot.py  # 主程序
 4. 推送到分支 (`git push origin feature/AmazingFeature`)
 5. 提交 Pull Request
 
+### 发布新版本
+
+项目使用 GitHub Actions 自动构建和发布 Docker 镜像：
+
+1. 更新 `tgto123.py` 中的版本号
+2. 更新 `README.md` 中的版本信息和更新日志
+3. 在 GitHub 创建新的 Release（例如：v1.0.3）
+4. GitHub Actions 会自动构建并推送以下镜像：
+   - `dydydd/123bot:v1.0.3`（版本号标签）
+   - `dydydd/123bot:latest`（最新版本标签）
+
 ### 代码规范
 
 - 遵循 PEP 8 Python 编码规范
@@ -535,6 +641,46 @@ python 123bot.py  # 主程序
 
 [![Star History Chart](https://api.star-history.com/svg?repos=dydydd/123bot&type=Date)](https://star-history.com/#dydydd/123bot&Date)
 
+---
+
+## 📝 更新日志
+
+> 💡 **使用指定版本**：在 docker-compose.yml 或 docker run 命令中将 `latest` 替换为具体版本号，如 `v1.0.2`
+> 
+> 查看所有版本：[GitHub Releases](https://github.com/dydydd/123bot/releases) | [Docker Hub Tags](https://hub.docker.com/r/dydydd/123bot/tags)
+
+### v1.0.2 
+
+**新增功能**
+- ✨ 添加秒传文件兼容性支持
+- 🔧 优化文件传输稳定性
+
+**改进**
+- 📦 提升秒传识别准确度
+- 🐛 修复部分文件格式兼容性问题
+
+### v1.0.1 
+
+**新增功能**
+- 🎨 全新 Web 管理界面上线
+- ⚙️ 支持在线配置管理
+
+**改进**
+- 💅 现代化 UI 设计，支持移动端适配
+- 🔐 增强登录安全性
+- 📝 优化配置项展示
+
+### v1.0.0 
+
+**初始版本**
+- 🎉 恢复机器人正常运行
+- ✅ 支持 123 云盘自动转存
+- 📡 Telegram Bot 集成
+- 🔄 频道监控功能
+- 🎬 302 直链播放
+- 🚀 Docker 部署支持
+
+---
 
 ## 📄 许可证
 
