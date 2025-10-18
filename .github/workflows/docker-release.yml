@@ -56,5 +56,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: ${{ env.DOCKER_IMAGE }}
-          readme-filepath: ./README.md
+          readme-filepath: ./DOCKER_README.md
+          short-description: 'Telegram 云盘自动转存机器人 - 支持 123/115/189 云盘自动转存、离线下载、秒传和 302 播放'
 
