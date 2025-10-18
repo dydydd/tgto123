@@ -30,4 +30,4 @@ RUN python -m compileall -b .
 RUN rm *.py
 
 # 运行Python脚本
-CMD ["python", "-O", "tgto123.pyc"]
+CMD ["python", "-O", "123bot.pyc"]

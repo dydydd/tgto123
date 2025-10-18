@@ -1,7 +1,7 @@
 services:
-  tgto123:
+  bot123:
     build: .
-    container_name: tgto123
+    container_name: bot123
     restart: always
     network_mode: host
     ports:
