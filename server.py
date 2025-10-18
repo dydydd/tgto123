@@ -123,9 +123,11 @@ def login():
         return jsonify({'success': False})
 
 # 登出API
-@app.route('/api/logout')
+@app.route('/api/logout', methods=['GET', 'POST'])
 def logout():
     session.pop('logged_in', None)
+    if request.method == 'POST':
+        return jsonify({'success': True})
     return redirect(url_for('login_page'))
 
 # 登录页面
