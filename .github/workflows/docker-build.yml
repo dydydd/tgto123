@@ -38,6 +38,13 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       
+      - name: Get version from code
+        id: get_version
+        run: |
+          VERSION=$(grep -oP 'version = "\K[^"]+' tgto123.py)
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Detected version: $VERSION"
+      
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v5
@@ -49,6 +56,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
+            type=raw,value=${{ steps.get_version.outputs.VERSION }},enable={{is_default_branch}}
             type=raw,value=latest,enable={{is_default_branch}}
       
       - name: Build and push Docker image
